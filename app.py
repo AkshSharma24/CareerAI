@@ -3,7 +3,18 @@ from openai import OpenAI
 import os
 
 # ---------------- API KEY HANDLING ----------------
-api_key = os.getenv("OPENROUTER_API_KEY")
+# ---------------- API KEY HANDLING ----------------
+api_key = None
+
+# Streamlit Secrets first
+try:
+    api_key = st.secrets["OPENROUTER_API_KEY"]
+except:
+    pass
+
+# Environment variable fallback
+if not api_key:
+    api_key = os.getenv("OPENROUTER_API_KEY")
 
 # Local fallback (.env support)
 if not api_key:
@@ -18,7 +29,6 @@ if not api_key:
 if not api_key:
     st.error("❌ API key not found. Please add it in Streamlit Secrets.")
     st.stop()
-
 # ---------------- OPENROUTER CLIENT ----------------
 client = OpenAI(
     api_key=api_key,
